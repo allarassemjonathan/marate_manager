@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .table thead {
+    background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+    color: white;
+    white-space: nowrap;
+  }
+  .table tbody tr:hover {
+    background-color: #f1f5f9;
+  }
+
+  .action-btn {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    transition: 0.2s ease;
+    font-size: 1.1rem;
+  }
+  .action-btn:hover {
+    color: #0ea5e9;
+  }
+  .delete-btn:hover {
+    color: #dc2626;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+
+  /* --- Responsive layout --- */
+  @media (max-width: 768px) {
+    h3 {
+      font-size: 1.2rem;
+    }
+    .table thead {
+      display: none;
+    }
+    .table tbody tr {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .table td {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    .table td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #334155;
+    }
+
+    /* --- Stack action buttons vertically on mobile --- */
+    .action-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .action-stack .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 1.2rem;
+    }
+    .action-stack .action-btn span {
+      font-size: 0.75rem;
+      color: #475569;
+      margin-top: 0.2rem;
+    }
+  }
+  .action-stack {
+  display: flex;
+  flex-direction: row;
+  gap: 0.6rem;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column; /* Stack icon + text vertically */
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #0ea5e9;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.action-btn i {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem; /* Space between icon and text */
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  color: #0284c7;
+}
+
+.delete-btn:hover {
+  color: #dc3545;
+}
+
+.info-btn:hover {
+  color: #14940d;
+}
+
+</style>
+
+<h3 class="mb-4 text-primary d-flex align-items-center gap-2">
+  <i class="bi bi-calendar2-week"></i>
+  Scheduled Workers
+</h3>
+
+{% if schedules %}
+<div class="table-responsive shadow-sm rounded">
+  <table class="table align-middle mb-0">
+    <thead>
+      <tr>
+        <th>Worker</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th>Phone</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in schedules %}
+      <tr>
+        <td data-label="Worker">
+          <img src="https://allarassemjonathan.github.io/person.jpg"
+               alt="Avatar"
+               class="rounded-circle avatar">
+          <span class="fw-semibold">{{ s[1] }}</span>
+        </td>
+        <td data-label="Date">{{ s[2] }}</td>
+        <td data-label="Location">{{ s[3] }}</td>
+        <td data-label="Phone">{{ s[4] }}</td>
+        <td data-label="Actions" class="text-end">
+        <div class="action-stack">
+  <!-- Edit -->
+  <a href="{{ url_for('edit_worker', worker_id=s[5]) }}"
+     class="action-btn"
+     title="Edit">
+    <i class="bi bi-pencil"></i>
+    <span>Edit</span>
+  </a>
+
+  <!-- Delete -->
+  <button type="button"
+          class="action-btn delete-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#confirmDeleteModal"
+          data-action="{{ url_for('delete_schedule', schedule_id=s[0]) }}"
+          title="Delete">
+    <i class="bi bi-trash"></i>
+    <span>Delete</span>
+  </button>
+
+  <!-- Reminder -->
+  <button type="button"
+          class="action-btn info-btn"
+          onclick="openReminderModal('{{ s[1] }}', '{{ s[4] }}')"
+          title="Reminder">
+    <i class="bi bi-bell"></i>
+    <span>Reminder</span>
+  </button>
+</div>
+    </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-info mt-3 text-center shadow-sm">
+  No schedules yet. Add one using the “Schedule” button!
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header text-white" 
+           style="background: linear-gradient(90deg, #0ea5e9, #38bdf8);">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <p class="mb-3">
+          Are you sure you want to delete this event? 
+          <strong>This action cannot be undone.</strong>
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <form id="deleteForm" method="POST">
+          <button type="submit" class="btn btn-danger">
+            Yes, Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reminder Confirmation Modal -->
+<div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header text-white" style="background: linear-gradient(90deg, #0ea5e9, #38bdf8);">
+        <h5 class="modal-title">
+          <i class="bi bi-bell me-2"></i>Reminder Status
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <p class="mb-0" id="reminderMessage">Sending reminder...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const deleteModal = document.getElementById('confirmDeleteModal');
+  deleteModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const action = button.getAttribute('data-action');
+    document.getElementById('deleteForm').setAttribute('action', action);
+  });
+  function sendReminder(name, phone) {
+    fetch("{{ url_for('reminder') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token() if csrf_token is defined else '' }}"
+      },
+      body: JSON.stringify({ name: name, phone: phone })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert(`Reminder sent for ${name}`);
+      }
+    })
+    .catch(err => console.error("Error sending reminder:", err));
+  }
+  function openReminderModal(name, phone) {
+    // Show modal
+    const modalEl = new bootstrap.Modal(document.getElementById('reminderModal'));
+    document.getElementById('reminderMessage').textContent = "Sending reminder...";
+    modalEl.show();
+
+    // Send POST request
+    fetch("{{ url_for('reminder') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token() if csrf_token is defined else '' }}"
+        },
+        body: JSON.stringify({ name: name, phone: phone })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            document.getElementById('reminderMessage').textContent =
+                `Reminder successfully sent!`;
+        } else {
+            document.getElementById('reminderMessage').textContent =
+                `Failed to send reminder.`;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById('reminderMessage').textContent =
+            `Error sending reminder for ${name}.`;
+    });
+}
+</script>
+
+{% endblock %}
