@@ -150,31 +150,31 @@
         <li class="nav-item">
           <a href="{{ url_for('index') }}" class="nav-link">
             <i class="bi bi-calendar2-week"></i>
-            <span>Schedule</span>
+            <span>Horaire</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url_for('workers') }}" class="nav-link">
             <i class="bi bi-people-fill"></i>
-            <span>Workers</span>
+            <span>Travailleurs</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url_for('schedule') }}" class="nav-link">
             <i class="bi bi-clock-history"></i>
-            <span>Plan</span>
+            <span>Planification</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url_for('add_worker') }}" class="nav-link">
             <i class="bi bi-person-plus"></i>
-            <span>Add Worker</span>
+            <span>Ajouter un travailleur</span>
           </a>
         </li>
         {% if 'user' in session %}
         <li class="nav-item">
           <a class="btn btn-sm btn-light ms-3" href="{{ url_for('logout') }}">
-            <i class="bi bi-box-arrow-right"></i> Logout
+            <i class="bi bi-box-arrow-right"></i> Deconnexion
           </a>
         </li>
         {% endif %}
