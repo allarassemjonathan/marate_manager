@@ -10,7 +10,7 @@
   }
 </style>
 
-<h3 class="text-primary mb-4"><i class="bi bi-people"></i> Manage Workers</h3>
+<h3 class="text-primary mb-4"><i class="bi bi-people"></i> Gérer les travailleurs</h3>
 
 <form method="GET" action="{{ url_for('workers') }}" class="mb-4">
   <div class="input-group">
@@ -42,6 +42,6 @@
   {% endfor %}
 </div>
 {% else %}
-<div class="alert alert-info text-center shadow-sm">No workers found. Add one using “Add Worker”.</div>
+<div class="alert alert-info text-center shadow-sm">Aucun travailleur trouvé. Ajoutez-en un à l’aide du bouton “Ajouter un travailleur”.</div>
 {% endif %}
 {% endblock %}
