@@ -2,34 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Login | Marate AI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
   <style>
     body {
       background: linear-gradient(135deg, #06b6d4, #0ea5e9);
       font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
       height: 100vh;
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0;
+      padding: 1rem; /* add breathing room on smaller screens */
     }
 
     .login-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       width: 100%;
-      max-width: 380px;
+      max-width: 420px; /* a bit larger for phones */
       text-align: center;
       animation: fadeIn 0.4s ease;
     }
 
     .login-card img {
-      width: 70px;
-      margin-bottom: 1rem;
+      width: 80px;
+      margin-bottom: 1.2rem;
     }
 
     .btn-primary {
@@ -43,9 +46,35 @@
       box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
     }
 
+    label {
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+
+    input.form-control {
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+    }
+
+    .alert {
+      font-size: 0.9rem;
+      border-radius: 8px;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 1.5rem 1rem;
+        max-width: 95%;
+      }
+      .login-card img {
+        width: 65px;
+      }
     }
   </style>
 </head>
